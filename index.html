@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-height, initial-scale=1.0">
+    <title>PESCABICHO BRR</title>
+    <link rel="icon" href="Sources/Icono.png" type="image/x-icon"> <!-- Favicon -->
+    <style>
+        body {
+            margin: 0; 
+            overflow: hidden;
+        }
+        #gameArea {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            border: 2px solid pink;
+            background-image: url("Sources/Wallpaper.jpg");
+            background-size: contain;
+            background-position: center;
+            display: none; /* Ocultar el área del juego inicialmente */
+        }
+        .player {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+        }
+        img {
+            width: 100%;
+            height: auto;
+        }
+        #menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ECC4DD; /* Color de fondo */
+            background-image: url("Sources/Portada.jpg"); /* Imagen de portada como fondo */
+            background-size: contain; /* Asegúrate de que la imagen se adapte al tamaño del contenedor */
+            background-position: center; /* Centrar la imagen */
+            background-repeat: no-repeat; /* Evitar que la imagen se repita */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #startButton {
+            position: absolute; /* Cambiar a posición absoluta */
+            top: 50%; /* Centrar verticalmente */
+            left: 75%; /* Mover hacia la derecha */
+            transform: translateY(-50%); /* Ajustar verticalmente */
+            width: 150px; /* Definir el ancho */
+            height: auto; /* Mantener la proporción de la imagen */
+            max-height: 100px; /* Definir una altura máxima si es necesario */
+            z-index: 1; /* Asegurarse de que esté encima del fondo */
+        }
+        #title {
+            position: absolute; /* Permite posicionarlo en cualquier parte de la pantalla */
+            top: 82%; /* Ajusta esto para moverlo verticalmente */
+            left: 50%; /* Ajusta esto para moverlo horizontalmente */
+            transform: translate(-50%, -50%); /* Centrar el texto */
+            font-size: 48px; /* Tamaño de la fuente */
+            color: yellow; /* Color amarillo */
+            font-weight: bold; /* Negrita */
+            margin-bottom: 50px; /* Espacio debajo del texto */
+        }
+        #clickCounter {
+            position: absolute;
+            bottom: 200px; /* Espaciado desde el fondo */
+            left: 120px; /* Espaciado desde la izquierda */
+            font-size: 48px; /* Tamaño de la fuente */
+            color: cyan; /* Color del texto */
+            z-index: 2; /* Asegurar que esté encima de otros elementos */
+        }
+        #loseImage, #winImage, #loseText, #winText {
+            position: absolute;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: transform 2s ease, opacity 2s ease;
+        }
+        #loseImage {
+            top: 40%; 
+            left: 50%; 
+            width: 300px;
+            height: 300px;
+        }
+        #loseText {
+            top: 75%; 
+            left: 50%; 
+            width: 300px;
+            height: 300px;
+        }
+        #winImage {
+            top: 40%; 
+            left: 50%; 
+            width: 500px;
+            height: 500px;
+        }
+        #winText {
+            top: 75%; 
+            left: 50%; 
+            width: 500px;
+            height: 300px;
+        }
+        #restartButton {
+            position: absolute;
+            top: 50%; /* Ajusta la posición verticalmente */
+            left: 65%; /* Centrar horizontalmente en la misma posición que el botón de inicio */
+            transform: translateY(-50%) scale(0); /* Inicialmente oculto y escalado a 0 */
+            width: 150px; /* Definir el ancho */
+            height: auto; /* Mantener la proporción de la imagen */
+            max-height: 100px; /* Definir una altura máxima si es necesario */
+            display: block; /* Asegúrate de que esté visible para la transición */
+            z-index: 1; /* Asegurarse de que esté encima del fondo */
+            opacity: 0; /* Inicialmente invisible */
+            transition: transform 2s ease, opacity 2s ease; /* Efecto de transición */
+        }
+        #lado {
+            position: absolute; /* Posición absoluta para colocar la imagen */
+            top: 10%; /* Ajustar posición verticalmente */
+            left: 50%; /* Centrar horizontalmente */
+            transform: translate(-50%, -50%); /* Centrar la imagen */
+            width: 200px; /* Ajustar ancho según necesidad */
+            height: auto; /* Mantener proporción */
+            z-index: 1; /* Asegurarse de que esté encima del fondo */
+        }
+    </style>
+</head>
+<body>
+<div id="menu">
+    <img id="lado" src="Sources/LADO.png" alt="lado"> <!-- Imagen adicional en la portada -->
+    <h1 id="title">PESCABICHO</h1> <!-- Texto centrado -->
+    <img id="startButton" src="Sources/Start.png" alt="Iniciar Juego">
+</div>
+<div id="gameArea">
+    <div id="player1" class="player">
+        <img src="Sources/HelloKitty.png" alt="Jugador 1">
+    </div>
+    <div id="chaser" class="player">
+        <img src="Sources/Bacalao.png" alt="Chaser">
+    </div>
+    <img id="loseImage" src="Sources/Lose.png" alt="Perdiste">
+    <img id="loseText" src="Sources/LoseText.png" alt="Perdiste Texto">
+    
+    <img id="winImage" src="Sources/Win.png" alt="Ganaste">
+    <img id="winText" src="Sources/WinText.png" alt="Ganaste Texto">
+    <audio id="backgroundMusic">
+        <source src="Sources/Audio.mp3" type="audio/mp3">
+    </audio>
+    <audio id="loseSound">
+        <source src="Sources/Audio2.mp3" type="audio/mp3"> <!-- Agregar audio de perder -->
+    </audio>
+    <img id="restartButton" src="Sources/Replay.png" alt="Reiniciar Juego" onclick="restartGame()"> <!-- Imagen de reinicio -->
+    
+    <div id="clickCounter">0</div> <!-- Contador de clics -->
+</div>
+<script>
+    const player1 = document.getElementById('player1');
+    const chaser = document.getElementById('chaser');
+    const loseImage = document.getElementById('loseImage');
+    const loseText = document.getElementById('loseText');
+    const winImage = document.getElementById('winImage');
+    const winText = document.getElementById('winText');
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    const loseSound = document.getElementById('loseSound'); // Audio de perder
+    const menu = document.getElementById('menu');
+    const gameArea = document.getElementById('gameArea');
+    const startButton = document.getElementById('startButton');
+    const restartButton = document.getElementById('restartButton'); // Imagen de reinicio
+    const clickCounter = document.getElementById('clickCounter'); // Contador de clics
+    let player1Position = { x: 0, y: 0 };
+    let chaserPosition = { x: 400, y: 300 };
+    const chaserSpeed = 0.5;
+    let gameRunning = true;
+    let chaseCounter = 0;
+    let clickLimit = 0;
+    let totalClicks = 0; // Variable para contar clics
+    startButton.addEventListener('click', startGame);
+    function startGame() {
+        totalClicks = 0; // Reiniciar contador de clics
+        clickCounter.textContent = totalClicks; // Actualizar visualización
+        startButton.src = "Sources/StartClicked.png"; // Cambia a la imagen deseada
+        menu.style.display = 'none'; // Ocultar el menú
+        gameArea.style.display = 'block'; // Mostrar el área del juego
+        setRandomPlayerPosition();
+        backgroundMusic.play(); // Reproducir música aquí
+        clickLimit = Math.floor(backgroundMusic.duration); // Establecer el límite de clics según la duración del audio
+        gameLoop();
+        
+        // Verificar si la música ha terminado
+        backgroundMusic.addEventListener('ended', winGame);
+    }
+    function setRandomPlayerPosition() {
+        let randomX, randomY;
+        do {
+            randomX = Math.random() * (window.innerWidth - 100);
+            randomY = Math.random() * (window.innerHeight - 100);
+        } while (isTooClose(randomX, randomY, chaserPosition.x, chaserPosition.y));
+        player1Position = { x: randomX, y: randomY };
+        player1.style.left = `${player1Position.x}px`;
+        player1.style.top = `${player1Position.y}px`;
+    }
+    function chasePlayer() {
+        if (!gameRunning) return;
+        const distanceX = player1Position.x - chaserPosition.x;
+        const distanceY = player1Position.y - chaserPosition.y;
+        const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+        if (distance > 1) {
+            chaserPosition.x += (distanceX / distance) * chaserSpeed;
+            chaserPosition.y += (distanceY / distance) * chaserSpeed;
+        }
+        chaser.style.left = `${chaserPosition.x}px`;
+        chaser.style.top = `${chaserPosition.y}px`;
+        checkCollision();
+    }
+    function checkCollision() {
+        const player1Rect = player1.getBoundingClientRect();
+        const chaserRect = chaser.getBoundingClientRect();
+        if (isIntersecting(player1Rect, chaserRect)) {
+            endGame();
+        }
+    }
+    function isIntersecting(rect1, rect2) {
+        return !(rect1.right < rect2.left || rect1.left > rect2.right || rect1.bottom < rect2.top || rect1.top > rect2.bottom);
+    }
+    function endGame() {
+        gameRunning = false;
+        showLoseImages();
+        loseSound.play(); // Reproducir sonido de perder
+        backgroundMusic.pause(); // Pausar la música si el jugador pierde
+        restartButton.style.display = 'block'; // Mostrar la imagen de reinicio
+        restartButton.style.transform = 'translateY(-50%) scale(1)'; // Aumentar tamaño
+        restartButton.style.opacity = '1'; // Hacerlo visible
+    }
+    function movePlayerToRandomPosition() {
+        if (!gameRunning) return;
+        chaseCounter++;
+        totalClicks++; // Incrementar el contador de clics
+        clickCounter.textContent = totalClicks; // Actualizar visualización
+        if (chaseCounter < clickLimit) {
+            let randomX, randomY;
+            do {
+                randomX = Math.random() * (window.innerWidth - 100);
+                randomY = Math.random() * (window.innerHeight - 100);
+            } while (isTooClose(randomX, randomY, chaserPosition.x, chaserPosition.y));
+            player1Position = { x: randomX, y: randomY };
+            player1.style.left = `${player1Position.x}px`;
+            player1.style.top = `${player1Position.y}px`;
+        } 
+        // Ya no se muestra winGame aquí
+    }
+    function isTooClose(x, y, chaserX, chaserY) {
+        const distanceX = x - chaserX;
+        const distanceY = y - chaserY;
+        return Math.sqrt(distanceX * distanceX + distanceY * distanceY) < 200;
+    }
+    function showLoseImages() {
+        loseImage.style.transform = 'translate(-50%, -50%) scale(1)';
+        loseImage.style.opacity = '1';
+        loseText.style.transform = 'translate(-50%, -50%) scale(1)';
+        loseText.style.opacity = '1';
+    }
+    function showWinImages() {
+        winImage.style.transform = 'translate(-50%, -50%) scale(1)';
+        winImage.style.opacity = '1';
+        winText.style.transform = 'translate(-50%, -50%) scale(1)';
+        winText.style.opacity = '1';
+    }
+    function winGame() {
+        gameRunning = false;
+        showWinImages();
+        loseImage.style.display = 'none';
+        loseText.style.display = 'none';
+    
+        backgroundMusic.pause(); // Pausar la música cuando el jugador gana
+        restartButton.style.display = 'block'; // Mostrar el botón de reiniciar
+        restartButton.style.transform = 'translateY(-50%) scale(1)'; // Aumentar tamaño
+        restartButton.style.opacity = '1'; // Hacerlo visible
+    }
+    player1.addEventListener('click', () => {
+        movePlayerToRandomPosition();
+    });
+    function restartGame() {
+        location.reload(); // Recargar la página
+    }
+    function gameLoop() {
+        chasePlayer();
+        requestAnimationFrame(gameLoop);
+    }
+</script>
+</body>
+</html>
